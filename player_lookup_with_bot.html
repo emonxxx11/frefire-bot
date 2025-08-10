@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fire Player Lookup - REAL DATA BOT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .bot-button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .bot-button:hover {
+            background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+        }
+
+        .result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .result.loading {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .game-selector {
+            margin-bottom: 1rem;
+        }
+
+        .game-selector h3 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .server-status {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            text-align: left;
+        }
+
+        .server-status p {
+            margin: 0.25rem 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .server-status span {
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .server-status span.success {
+            color: #28a745;
+        }
+
+        .server-status span.error {
+            color: #dc3545;
+        }
+
+        .server-status span.warning {
+            color: #ffc107;
+        }
+
+        /* Player Card Styles */
+        .player-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .player-header {
+            margin-bottom: 20px;
+        }
+
+        .player-header h3 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: #fff;
+        }
+
+        .uid-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+
+        .player-avatar {
+            margin: 20px 0;
+        }
+
+        .avatar-placeholder {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .player-details h4 {
+            margin: 0 0 5px 0;
+            font-size: 28px;
+            color: #fff;
+        }
+
+        .nickname {
+            margin: 0 0 20px 0;
+            font-size: 18px;
+            color: rgba(255,255,255,0.8);
+            font-style: italic;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .clan-info {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .clan-label {
+            color: rgba(255,255,255,0.7);
+            margin-right: 10px;
+        }
+
+        .clan-name {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .performance-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        /* Real vs Mock Data Styling */
+        .player-card.real-data {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: 3px solid #28a745;
+        }
+
+        .player-card.mock-data {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 3px solid #6c757d;
+        }
+
+        .real-data-badge {
+            background: #28a745;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        .mock-data-badge {
+            background: #6c757d;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .bot-data-badge {
+            background: #17a2b8;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* API Status Indicator */
+        .api-status {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #28a745;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.searching {
+            background: #ffc107;
+            animation: pulse 1s infinite;
+        }
+
+        .status-dot.error {
+            background: #dc3545;
+            animation: none;
+        }
+
+        .status-dot.success {
+            background: #28a745;
+            animation: none;
+        }
+
+        .status-dot.bot {
+            background: #17a2b8;
+            animation: pulse 1s infinite;
+        }
+
+        .status-text {
+            color: #495057;
+            font-weight: 500;
+        }
+
+        /* Search History Styles */
+        .search-history {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #e9ecef;
+        }
+
+        .search-history h4 {
+            margin: 0 0 15px 0;
+            color: #495057;
+            font-size: 18px;
+        }
+
+        #historyList {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .history-item {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+            transform: translateY(-2px);
+        }
+
+        /* Bot Status */
+        .bot-status {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .bot-status h4 {
+            color: #1976d2;
+            margin-bottom: 0.5rem;
+        }
+
+        .bot-status p {
+            color: #424242;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .performance-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .player-card {
+                padding: 20px;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Free Fire Player Lookup</h1>
+        <h3>🔥 REAL DATA BOT VERSION</h3>
+
+        <div class="input-group">
+            <input type="text" id="uidInput" placeholder="Enter Free Fire UID (7-50 digits)" maxlength="50">
+        </div>
+
+        <div class="api-status">
+            <div id="apiStatusIndicator" class="status-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text">Ready to search with REAL DATA BOT! 🤖</span>
+            </div>
+        </div>
+
+        <button class="bot-button" onclick="useBotToGetRealData()">🤖 GET REAL DATA FROM GARENA</button>
+        <button onclick="useMockData()">🎭 Use Demo Data (Fallback)</button>
+
+        <div id="result" class="result" style="display: none;"></div>
+
+        <div class="bot-status">
+            <h4>🤖 BOT SERVER STATUS</h4>
+            <p>This bot will automatically navigate to Garena's official website, select Free Fire, enter your UID, and extract real player data!</p>
+        </div>
+
+        <div class="search-history">
+            <h4>🔍 Recent Searches</h4>
+            <div id="historyList"></div>
+        </div>
+
+        <div class="server-status">
+            <p><strong>Server Status:</strong></p>
+            <p>🤖 Bot Server: <span id="botStatus">Checking...</span></p>
+            <p>🌐 Garena Website: <span id="garenaStatus">Ready</span></p>
+            <p>🎯 Data Source: <span id="dataSource">Bot Scraping</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Bot Server Configuration
+        const BOT_SERVER = {
+            // Use deployed bot server, fallback to localhost for development
+            BASE_URL: window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://your-bot-server.onrender.com',
+            ENDPOINTS: {
+                SCRAPE: '/api/bot/scrape',
+                HEALTH: '/api/bot/health'
+            }
+        };
+
+        // Mock data for fallback
+        const mockPlayers = {
+            "2049388562": {
+                username: "ProGamer2024",
+                nickname: "ProGamer",
+                game: "Free Fire",
+                level: 82,
+                rank: "Heroic",
+                region: "Asia",
+                clan: "EliteForce",
+                kills: 23450,
+                matches: 1560
+            },
+            "7206900424": {
+                username: "ElitePlayer2024",
+                nickname: "Elite",
+                game: "Free Fire",
+                level: 76,
+                rank: "Heroic",
+                region: "Asia",
+                clan: "EliteSquad",
+                kills: 15420,
+                matches: 890
+            },
+            "1709987876": {
+                username: "FireMaster2024",
+                nickname: "FireMaster",
+                game: "Free Fire",
+                level: 89,
+                rank: "Grandmaster",
+                region: "Asia",
+                clan: "FireLegion",
+                kills: 28950,
+                matches: 1240
+            }
+        };
+
+        // Free Fire UID validation pattern (7-50 digits)
+        const freeFirePattern = /^\d{7,50}$/;
+
+        // Main function to use bot for real data
+        async function useBotToGetRealData() {
+            const uid = document.getElementById('uidInput').value.trim();
+            const resultDiv = document.getElementById('result');
+
+            if (!uid) {
+                showResult('Please enter a Free Fire UID', 'error');
+                return;
+            }
+
+            // Validate Free Fire UID format (7-50 digits)
+            if (!freeFirePattern.test(uid)) {
+                showResult('Invalid Free Fire UID format. UID must be 7-50 digits.', 'error');
+                return;
+            }
+
+            // Show loading and update status
+            showResult('🤖 Bot is navigating to Garena website...', 'loading');
+            updateAPIStatus('bot', '🤖 Bot is working on Garena website...');
+
+            try {
+                console.log(`🚀 Starting bot scraping for UID: ${uid}`);
+                
+                // Call bot server
+                const response = await fetch(`${BOT_SERVER.BASE_URL}${BOT_SERVER.ENDPOINTS.SCRAPE}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ uid: uid })
+                });
+
+                console.log(`✅ Bot server response: ${response.status} ${response.statusText}`);
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('🎯 Bot server result:', result);
+
+                    if (result.success && result.data) {
+                        updateAPIStatus('success', '🎉 Bot found REAL Free Fire player data!');
+                        showPlayerResult(result.data, uid, 'bot');
+                        addToHistory(uid);
+                        return;
+                    } else {
+                        updateAPIStatus('error', '❌ Bot could not extract data');
+                        showResult(`Bot could not find data for UID "${uid}". ${result.message}`, 'error');
+                        return;
+                    }
+                } else {
+                    throw new Error(`Bot server error: ${response.status}`);
+                }
+
+            } catch (error) {
+                console.log('❌ Bot error:', error.message);
+                updateAPIStatus('error', '❌ Bot server error');
+                showResult(`Bot server error: ${error.message}. Try using demo data instead.`, 'error');
+            }
+        }
+
+        // Fallback to mock data
+        function useMockData() {
+            const uid = document.getElementById('uidInput').value.trim();
+            const resultDiv = document.getElementById('result');
+
+            if (!uid) {
+                showResult('Please enter a Free Fire UID', 'error');
+                return;
+            }
+
+            if (!freeFirePattern.test(uid)) {
+                showResult('Invalid Free Fire UID format. UID must be 7-50 digits.', 'error');
+                return;
+            }
+
+            showResult('🎭 Using demo data...', 'loading');
+            updateAPIStatus('searching', '🎭 Loading demo data...');
+
+            setTimeout(() => {
+                if (mockPlayers[uid]) {
+                    const player = mockPlayers[uid];
+                    updateAPIStatus('success', '🎭 Demo data loaded successfully');
+                    showPlayerResult(player, uid, 'mock');
+                    addToHistory(uid);
+                } else {
+                    updateAPIStatus('error', '❌ Demo data not found');
+                    showResult(`Player with UID "${uid}" not found in demo database`, 'error');
+                }
+            }, 1000);
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = message;
+        }
+
+        function showPlayerResult(player, uid, dataType) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result success';
+
+            // Determine data type and styling
+            let cardClass = 'player-card';
+            let badge = '';
+            let sourceText = '';
+
+            if (dataType === 'bot') {
+                cardClass += ' real-data';
+                badge = '<div class="bot-data-badge">🤖 BOT DATA</div>';
+                sourceText = 'Scraped from Garena Official Website';
+            } else if (dataType === 'mock') {
+                cardClass += ' mock-data';
+                badge = '<div class="mock-data-badge">🎭 DEMO DATA</div>';
+                sourceText = 'Demo Database';
+            }
+
+            // Create player card
+            let playerCard = `
+                <div class="${cardClass}">
+                    <div class="player-header">
+                        <h3>✅ Player Found!</h3>
+                        <div class="uid-badge">UID: ${uid}</div>
+                        ${badge}
+                    </div>
+
+                    <div class="player-avatar">
+                        <div class="avatar-placeholder">🎮</div>
+                    </div>
+
+                    <div class="player-details">
+                        <h4>${player.username}</h4>
+                        <p class="nickname">"${player.nickname}"</p>
+
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">🎯 Level</span>
+                                <span class="stat-value">${player.level}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">🏆 Rank</span>
+                                <span class="stat-value">${player.rank}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">🌍 Region</span>
+                                <span class="stat-value">${player.region}</span>
+                            </div>
+                        </div>
+
+                        ${player.clan ? `
+                        <div class="clan-info">
+                            <span class="clan-label">👥 Clan:</span>
+                            <span class="clan-name">${player.clan}</span>
+                        </div>
+                        ` : ''}
+
+                        ${player.kills ? `
+                        <div class="performance-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">💀 Total Kills</span>
+                                <span class="stat-value">${player.kills.toLocaleString()}</span>
+                            </div>
+                            ${player.matches ? `
+                            <div class="stat-item">
+                                <span class="stat-label">🎮 Matches Played</span>
+                                <span class="stat-value">${player.matches.toLocaleString()}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                        ` : ''}
+
+                        <div style="margin-top: 20px; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                            <small>📡 Data Source: ${sourceText}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            resultDiv.innerHTML = playerCard;
+        }
+
+        // Enter key support
+        document.getElementById('uidInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                useBotToGetRealData(); // Default to bot
+            }
+        });
+
+        // Search history management
+        let searchHistory = JSON.parse(localStorage.getItem('freeFireSearchHistory') || '[]');
+
+        function addToHistory(uid) {
+            if (!searchHistory.includes(uid)) {
+                searchHistory.unshift(uid);
+                searchHistory = searchHistory.slice(0, 10);
+                localStorage.setItem('freeFireSearchHistory', JSON.stringify(searchHistory));
+                updateHistoryDisplay();
+            }
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            if (searchHistory.length === 0) {
+                historyList.innerHTML = '<p style="color: #6c757d; font-style: italic;">No recent searches</p>';
+                return;
+            }
+
+            historyList.innerHTML = searchHistory.map(uid =>
+                `<div class="history-item" onclick="searchFromHistory('${uid}')">${uid}</div>`
+            ).join('');
+        }
+
+        function searchFromHistory(uid) {
+            document.getElementById('uidInput').value = uid;
+            useBotToGetRealData(); // Default to bot
+        }
+
+        function updateAPIStatus(status, message) {
+            const indicator = document.getElementById('apiStatusIndicator');
+            const dot = indicator.querySelector('.status-dot');
+            const text = indicator.querySelector('.status-text');
+
+            dot.classList.remove('searching', 'error', 'success', 'bot');
+            dot.classList.add(status);
+            text.textContent = message;
+        }
+
+        // Test bot server connection on page load
+        window.addEventListener('load', async () => {
+            await testBotServerConnection();
+            updateHistoryDisplay();
+        });
+
+        async function testBotServerConnection() {
+            try {
+                const response = await fetch(`${BOT_SERVER.BASE_URL}${BOT_SERVER.ENDPOINTS.HEALTH}`);
+                const botStatus = document.getElementById('botStatus');
+                
+                if (response.ok) {
+                    botStatus.textContent = 'Connected';
+                    botStatus.className = 'success';
+                } else {
+                    botStatus.textContent = 'Error';
+                    botStatus.className = 'error';
+                }
+            } catch (error) {
+                const botStatus = document.getElementById('botStatus');
+                botStatus.textContent = 'Offline';
+                botStatus.className = 'error';
+            }
+
+            // Update data source
+            const dataSource = document.getElementById('dataSource');
+            dataSource.textContent = 'Bot Scraping (Real Data)';
+            dataSource.className = 'success';
+        }
+    </script>
+</body>
+</html> 
