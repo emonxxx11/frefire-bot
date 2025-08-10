@@ -451,6 +451,7 @@
     <div class="container">
         <h1>🎮 Free Fire Player Lookup</h1>
         <h3>🔥 REAL DATA BOT VERSION</h3>
+        <p style="color: #666; margin-bottom: 1rem;">Powered by Garena Official Site & Bot Backend</p>
 
         <div class="input-group">
             <input type="text" id="uidInput" placeholder="Enter Free Fire UID (7-50 digits)" maxlength="50">
@@ -471,6 +472,11 @@
         <div class="bot-status">
             <h4>🤖 BOT SERVER STATUS</h4>
             <p>This bot will automatically navigate to Garena's official website, select Free Fire, enter your UID, and extract real player data!</p>
+            <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                <p><strong>🌐 Garena Official:</strong> <a href="https://shop.garena.sg/" target="_blank">shop.garena.sg</a></p>
+                <p><strong>🤖 Bot Backend:</strong> <a href="https://frefire-bot-backend.onrender.com" target="_blank">frefire-bot-backend.onrender.com</a></p>
+                <p><strong>🎯 Frontend:</strong> <a href="https://emonxxx11.github.io/frefire-bot/" target="_blank">emonxxx11.github.io/frefire-bot</a></p>
+            </div>
         </div>
 
         <div class="search-history">
@@ -490,7 +496,7 @@
         // Bot Server Configuration
         const BOT_SERVER = {
             // Use deployed bot server, fallback to localhost for development
-            BASE_URL: window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://your-bot-server.onrender.com',
+            BASE_URL: window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://frefire-bot-backend.onrender.com',
             ENDPOINTS: {
                 SCRAPE: '/api/bot/scrape',
                 HEALTH: '/api/bot/health'
